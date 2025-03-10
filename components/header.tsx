@@ -2,14 +2,15 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 
 const navLinks = [
-  { href: "#services", label: "Mé služby" },
-  { href: "#about", label: "O mě" },
-  { href: "/ebook", label: "E-book" },
+  { href: "#services", label: "Služby" },
+  { href: "#about", label: "O mně" },
+  { href: "#ebook", label: "E-book" },
+  { href: "#contact", label: "Kontakt" },
 ]
 
 export default function Header() {
@@ -17,12 +18,32 @@ export default function Header() {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState<string | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10)
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+      
+      // Update active section based on scroll position
+      if (pathname === "/" || pathname === "") {
+        const sections = navLinks.map(link => link.href.startsWith('#') ? link.href.slice(1) : null).filter(Boolean)
+        
+        for (const section of sections) {
+          const element = document.getElementById(section as string)
+          if (element) {
+            const rect = element.getBoundingClientRect()
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              setActiveSection(section)
+              break
+            }
+          }
+        }
+      }
+    }
+    
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [pathname])
 
   // Zjištění, zda jsme na hlavní stránce
   const isHomePage = pathname === "/" || pathname === ""
@@ -35,6 +56,7 @@ export default function Header() {
       if (isHomePage) {
         // Jsme na hlavní stránce, stačí scrollovat
         document.getElementById(href.slice(1))?.scrollIntoView({ behavior: "smooth" })
+        setActiveSection(href.slice(1))
       } else {
         // Nejsme na hlavní stránce, nejprve navigujeme na hlavní stránku a pak přidáme hash
         router.push(`/${href}`)
@@ -49,12 +71,12 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? "bg-background/80 py-3 shadow-sm backdrop-blur-md" : "bg-transparent py-5"
+        isScrolled ? "bg-background/95 py-3 shadow-sm backdrop-blur-md" : "bg-transparent py-5"
       }`}
     >
       <div className="container flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold">
-          kalenda<span className="text-primary">.</span>ai
+        <Link href="/" className="text-xl font-bold group">
+          kalenda<span className="text-primary group-hover:text-primary/80 transition-colors">.</span>ai
         </Link>
 
         <nav className="hidden md:flex items-center">
@@ -65,14 +87,23 @@ export default function Header() {
                   <a
                     href={link.href}
                     onClick={(e) => handleNavClick(link.href, e)}
-                    className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+                    className={`relative text-sm font-medium transition-colors hover:text-foreground py-2 ${
+                      activeSection === link.href.slice(1) 
+                        ? "text-primary" 
+                        : "text-foreground/70"
+                    }`}
                   >
                     {link.label}
+                    {activeSection === link.href.slice(1) && (
+                      <span className="absolute bottom-0 left-0 h-0.5 w-full bg-primary"></span>
+                    )}
                   </a>
                 ) : (
                   <Link
                     href={link.href}
-                    className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+                    className={`text-sm font-medium transition-colors hover:text-foreground py-2 ${
+                      pathname === link.href ? "text-primary" : "text-foreground/70"
+                    }`}
                   >
                     {link.label}
                   </Link>
@@ -80,8 +111,12 @@ export default function Header() {
               </li>
             ))}
             <li>
-              <Button size="sm" className="rounded-full" onClick={() => handleNavClick("#contact")}>
-                Kontakt
+              <Button 
+                size="sm" 
+                className="rounded-full px-6 bg-primary text-white hover:bg-primary/90"
+                onClick={() => window.location.href = '/ebook'}
+              >
+                Získat e-book
               </Button>
             </li>
           </ul>
@@ -130,8 +165,8 @@ function MobileMenu({ onNavClick, isHomePage }: { onNavClick: (href: string, e?:
             </li>
           ))}
         </ul>
-        <Button size="lg" className="rounded-full w-full" onClick={() => onNavClick("#contact")}>
-          Kontakt
+        <Button size="lg" className="rounded-full w-full" onClick={() => window.location.href = '/ebook'}>
+          Získat e-book zdarma
         </Button>
         <div className="mt-4 text-center text-sm text-muted-foreground">
           <p>Máte zájem o AI řešení?</p>

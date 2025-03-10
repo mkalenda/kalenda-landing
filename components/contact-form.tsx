@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, Loader2, AlertCircle } from "lucide-react"
+import { CheckCircle2, Loader2, AlertCircle, Lock } from "lucide-react"
 
 const formFields = [
   { name: "name", label: "Jméno", placeholder: "Vaše jméno", type: "text" },
@@ -21,6 +21,7 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState("")
+  const [activeField, setActiveField] = useState<string | null>(null)
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -37,6 +38,8 @@ export default function ContactForm() {
     
     if (!formData.message.trim()) {
       newErrors.message = "Zpráva je povinná"
+    } else if (formData.message.length < 10) {
+      newErrors.message = "Zpráva musí obsahovat alespoň 10 znaků"
     }
     
     setErrors(newErrors)
@@ -91,44 +94,71 @@ export default function ContactForm() {
     }
   }
 
+  const handleFocus = (fieldName: string) => {
+    setActiveField(fieldName)
+  }
+
+  const handleBlur = () => {
+    setActiveField(null)
+    // Validate current form state
+    validateForm()
+  }
+
   if (isSubmitted) {
     return <SuccessMessage />
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {formFields.map((field) => (
-        <FormField
-          key={field.name}
-          {...field}
-          value={formData[field.name as keyof typeof formData]}
-          onChange={handleChange}
-          error={errors[field.name]}
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="space-y-2 text-center">
+        <h3 className="text-lg font-medium">Jak vám mohu pomoci?</h3>
+        <p className="text-sm text-muted-foreground">
+          Vyplňte formulář níže a odpovím vám do 24 hodin
+        </p>
+      </div>
       
-      {serverError && (
-        <div className="flex items-center text-red-500 text-sm mt-2">
-          <AlertCircle className="h-4 w-4 mr-2" />
-          {serverError}
-        </div>
-      )}
-      
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Odesílání...
-          </>
-        ) : (
-          "Odeslat zprávu"
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {formFields.map((field) => (
+          <FormField
+            key={field.name}
+            {...field}
+            value={formData[field.name as keyof typeof formData]}
+            onChange={handleChange}
+            error={errors[field.name]}
+            onFocus={() => handleFocus(field.name)}
+            onBlur={handleBlur}
+            isActive={activeField === field.name}
+          />
+        ))}
+        
+        {serverError && (
+          <div className="flex items-center text-red-500 text-sm mt-2">
+            <AlertCircle className="h-4 w-4 mr-2" />
+            {serverError}
+          </div>
         )}
-      </Button>
-    </form>
+        
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Odesílání...
+            </>
+          ) : (
+            "Odeslat zprávu"
+          )}
+        </Button>
+        
+        <div className="flex items-center justify-center text-xs text-muted-foreground">
+          <Lock className="h-3 w-3 mr-1" />
+          Vaše údaje jsou v bezpečí
+        </div>
+      </form>
+    </div>
   )
 }
 
@@ -140,6 +170,9 @@ function FormField({
   value,
   onChange,
   error,
+  onFocus,
+  onBlur,
+  isActive,
 }: {
   name: string
   label: string
@@ -148,13 +181,16 @@ function FormField({
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   error?: string
+  onFocus?: () => void
+  onBlur?: () => void
+  isActive?: boolean
 }) {
   const id = `field-${name}`
   const errorId = error ? `${id}-error` : undefined
   
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="font-medium">
+      <Label htmlFor={id} className={`font-medium transition-colors ${isActive ? 'text-primary' : ''}`}>
         {label}
         <span className="text-destructive ml-1">*</span>
       </Label>
@@ -165,8 +201,10 @@ function FormField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
           rows={4}
-          className={error ? "border-destructive" : ""}
+          className={`transition-all ${error ? "border-destructive" : isActive ? "border-primary ring-1 ring-primary" : ""}`}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={errorId}
           required
@@ -179,15 +217,22 @@ function FormField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={error ? "border-destructive" : ""}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className={`transition-all ${error ? "border-destructive" : isActive ? "border-primary ring-1 ring-primary" : ""}`}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={errorId}
           required
         />
       )}
-      {error && (
-        <p id={errorId} className="text-sm text-destructive">
-          {error}
+      {error ? (
+        <p id={errorId} className="text-sm text-destructive flex items-center">
+          <AlertCircle className="h-3 w-3 mr-1" /> {error}
+        </p>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          {name === 'email' && 'Nikdy nebudeme sdílet váš email s třetími stranami.'}
+          {name === 'message' && 'Popište stručně váš projekt nebo dotaz.'}
         </p>
       )}
     </div>
@@ -200,12 +245,15 @@ function SuccessMessage() {
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
         <CheckCircle2 className="h-6 w-6 text-green-600" />
       </div>
-      <h3 className="mt-4 text-lg font-medium text-green-800">
-        Děkujeme za vaši zprávu!
-      </h3>
-      <p className="mt-2 text-green-700">
-        Vaše zpráva byla úspěšně odeslána. Odpovíme vám co nejdříve.
+      <h3 className="mt-4 text-lg font-medium text-green-800">Zpráva úspěšně odeslána</h3>
+      <p className="mt-2 text-sm text-green-600">
+        Děkujeme za váš zájem. Odpovíme vám co nejdříve, obvykle do 24 hodin.
       </p>
+      <div className="mt-6">
+        <Button variant="outline" size="sm" onClick={() => window.location.href = '/ebook'}>
+          Stáhnout e-book zdarma
+        </Button>
+      </div>
     </div>
   )
 }

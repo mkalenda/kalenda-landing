@@ -177,7 +177,7 @@ export default function EbookPage() {
               <p className="mt-6 text-xl text-muted-foreground max-w-3xl mx-auto">
                 Kompletní průvodce implementací umělé inteligence pro české společnosti. Získejte praktické informace, případové studie a konkrétní návody.
               </p>
-              <div className="mt-8 flex justify-center">
+              <div className="mt-8 flex justify-center flex-wrap gap-4">
                 <Button size="lg" className="rounded-full px-8" onClick={() => document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })}>
                   Získat e-book zdarma
                 </Button>
@@ -275,285 +275,332 @@ export default function EbookPage() {
         </section>
 
         {/* Form Section */}
-        <section id="form-section" className="py-20">
+        <section id="form-section" className="py-20 bg-gradient-to-br from-background to-muted/30">
           <div className="container max-w-5xl">
             <div className="mb-12 text-center">
+              <span className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                Získejte zdarma
+              </span>
               <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Stáhněte si e-book zdarma</h2>
               <p className="mt-4 text-lg text-muted-foreground">
                 Vyplňte formulář níže a získejte okamžitý přístup k našemu komplexnímu průvodci implementací AI v českých firmách.
               </p>
             </div>
-            <div className="mx-auto max-w-2xl bg-card p-8 rounded-lg shadow-lg">
-              {success ? (
-                <div className="bg-green-500 text-white p-6 rounded-lg text-center">
-                  <h3 className="text-xl font-bold mb-2">Děkujeme!</h3>
-                  <p className="mb-4">E-book byl odeslán na vaši e-mailovou adresu.</p>
-                  <p>Zkontrolujte svou e-mailovou schránku včetně složky spam/hromadné.</p>
-                  <Button 
-                    className="mt-6 rounded-full" 
-                    variant="outline"
-                    onClick={() => router.push('/')}
-                  >
-                    Zpět na hlavní stránku
-                  </Button>
+            <div className="grid md:grid-cols-5 gap-8">
+              <div className="md:col-span-2 hidden md:block">
+                <div className="sticky top-24 space-y-6 border border-muted rounded-lg p-6 bg-card">
+                  <h3 className="text-lg font-semibold">Co získáte:</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <span className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                        <span className="text-primary text-xs">✓</span>
+                      </span>
+                      <span>Detailní postup implementace AI do firemních procesů</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                        <span className="text-primary text-xs">✓</span>
+                      </span>
+                      <span>Reálné příklady z českého prostředí</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                        <span className="text-primary text-xs">✓</span>
+                      </span>
+                      <span>Kompletní průvodce AI Act a jeho dopady</span>
+                    </li>
+                  </ul>
+                  
+                  <div className="border border-muted rounded-lg p-4 bg-muted/50">
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                        <span className="text-primary">🔒</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        <strong>100% bezpečné</strong>. Vaše údaje jsou v bezpečí a nikdy je nebudeme sdílet s třetími stranami.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {error && (
-                    <div className="bg-destructive text-destructive-foreground p-4 rounded-lg">
-                      {error}
-                    </div>
-                  )}
-                  
-                  {/* Form progress indicator */}
-                  <div className="mb-4">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Dokončeno {formProgress}%</span>
-                      <span>{formProgress < 100 ? 'Vyplňte prosím povinné údaje' : 'Formulář je připraven k odeslání'}</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-300" 
-                        style={{ width: `${formProgress}%` }}
-                      ></div>
-                    </div>
+              </div>
+              <div className="md:col-span-3 bg-card p-8 rounded-lg shadow-lg">
+                {success ? (
+                  <div className="bg-green-500 text-white p-6 rounded-lg text-center">
+                    <h3 className="text-xl font-bold mb-2">Děkujeme!</h3>
+                    <p className="mb-4">E-book byl odeslán na vaši e-mailovou adresu.</p>
+                    <p>Zkontrolujte svou e-mailovou schránku včetně složky spam/hromadné.</p>
+                    <Button 
+                      className="mt-6 rounded-full" 
+                      variant="outline"
+                      onClick={() => router.push('/')}
+                    >
+                      Zpět na hlavní stránku
+                    </Button>
                   </div>
-                  
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div>
-                      <label htmlFor="name" className="block font-semibold mb-2">
-                        Jméno a příjmení *
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.name ? 'border-destructive' : 'border-input'
-                        }`}
-                      />
-                      {fieldErrors.name && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.name}</p>
-                      )}
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                      <div className="bg-destructive text-destructive-foreground p-4 rounded-lg">
+                        {error}
+                      </div>
+                    )}
+                    
+                    {/* Form progress indicator */}
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Dokončeno {formProgress}%</span>
+                        <span>{formProgress < 100 ? 'Vyplňte prosím povinné údaje' : 'Formulář je připraven k odeslání'}</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all duration-300" 
+                          style={{ width: `${formProgress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label htmlFor="name" className="block font-semibold mb-2">
+                          Jméno a příjmení *
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.name ? 'border-destructive' : 'border-input'
+                          }`}
+                        />
+                        {fieldErrors.name && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.name}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block font-semibold mb-2">E-mail *</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.email ? 'border-destructive' : 'border-input'
+                          }`}
+                        />
+                        {fieldErrors.email && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.email}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label htmlFor="phone" className="block font-semibold mb-2">Telefon</label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.phone ? 'border-destructive' : 'border-input'
+                          }`}
+                        />
+                        {fieldErrors.phone && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.phone}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="company" className="block font-semibold mb-2">Společnost</label>
+                        <input
+                          type="text"
+                          id="company"
+                          name="company"
+                          value={formData.company}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.company ? 'border-destructive' : 'border-input'
+                          }`}
+                        />
+                        {fieldErrors.company && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.company}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label htmlFor="position" className="block font-semibold mb-2">Pozice</label>
+                        <input
+                          type="text"
+                          id="position"
+                          name="position"
+                          value={formData.position}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.position ? 'border-destructive' : 'border-input'
+                          }`}
+                        />
+                        {fieldErrors.position && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.position}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="company_size" className="block font-semibold mb-2">Velikost společnosti</label>
+                        <select
+                          id="company_size"
+                          name="company_size"
+                          value={formData.company_size}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.company_size ? 'border-destructive' : 'border-input'
+                          }`}
+                        >
+                          <option value="">Vyberte...</option>
+                          <option value="1-9">1-9 zaměstnanců</option>
+                          <option value="10-49">10-49 zaměstnanců</option>
+                          <option value="50-249">50-249 zaměstnanců</option>
+                          <option value="250+">250+ zaměstnanců</option>
+                        </select>
+                        {fieldErrors.company_size && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.company_size}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label htmlFor="industry" className="block font-semibold mb-2">Odvětví</label>
+                        <select
+                          id="industry"
+                          name="industry"
+                          value={formData.industry}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.industry ? 'border-destructive' : 'border-input'
+                          }`}
+                        >
+                          <option value="">Vyberte...</option>
+                          <option value="IT">IT a technologie</option>
+                          <option value="finance">Finance a bankovnictví</option>
+                          <option value="manufacturing">Výroba a průmysl</option>
+                          <option value="retail">Maloobchod a e-commerce</option>
+                          <option value="services">Služby</option>
+                          <option value="healthcare">Zdravotnictví</option>
+                          <option value="education">Vzdělávání</option>
+                          <option value="other">Jiné</option>
+                        </select>
+                        {fieldErrors.industry && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.industry}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="interest_level" className="block font-semibold mb-2">Zájem o implementaci AI</label>
+                        <select
+                          id="interest_level"
+                          name="interest_level"
+                          value={formData.interest_level}
+                          onChange={handleChange}
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                            fieldErrors.interest_level ? 'border-destructive' : 'border-input'
+                          }`}
+                        >
+                          <option value="">Vyberte...</option>
+                          <option value="researching">Zatím jen zjišťuji možnosti</option>
+                          <option value="planning">Plánujeme implementaci v příštích 6 měsících</option>
+                          <option value="implementing">Aktuálně implementujeme AI řešení</option>
+                          <option value="using">Již používáme AI a hledáme další možnosti</option>
+                        </select>
+                        {fieldErrors.interest_level && (
+                          <p className="mt-1 text-sm text-destructive">{fieldErrors.interest_level}</p>
+                        )}
+                      </div>
                     </div>
                     <div>
-                      <label htmlFor="email" className="block font-semibold mb-2">E-mail *</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.email ? 'border-destructive' : 'border-input'
-                        }`}
-                      />
-                      {fieldErrors.email && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.email}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div>
-                      <label htmlFor="phone" className="block font-semibold mb-2">Telefon</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.phone ? 'border-destructive' : 'border-input'
-                        }`}
-                      />
-                      {fieldErrors.phone && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.phone}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="company" className="block font-semibold mb-2">Společnost</label>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.company ? 'border-destructive' : 'border-input'
-                        }`}
-                      />
-                      {fieldErrors.company && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.company}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div>
-                      <label htmlFor="position" className="block font-semibold mb-2">Pozice</label>
-                      <input
-                        type="text"
-                        id="position"
-                        name="position"
-                        value={formData.position}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.position ? 'border-destructive' : 'border-input'
-                        }`}
-                      />
-                      {fieldErrors.position && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.position}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="company_size" className="block font-semibold mb-2">Velikost společnosti</label>
+                      <label htmlFor="how_found" className="block font-semibold mb-2">Jak jste se o nás dozvěděli?</label>
                       <select
-                        id="company_size"
-                        name="company_size"
-                        value={formData.company_size}
+                        id="how_found"
+                        name="how_found"
+                        value={formData.how_found}
                         onChange={handleChange}
                         className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.company_size ? 'border-destructive' : 'border-input'
+                          fieldErrors.how_found ? 'border-destructive' : 'border-input'
                         }`}
                       >
                         <option value="">Vyberte...</option>
-                        <option value="1-9">1-9 zaměstnanců</option>
-                        <option value="10-49">10-49 zaměstnanců</option>
-                        <option value="50-249">50-249 zaměstnanců</option>
-                        <option value="250+">250+ zaměstnanců</option>
-                      </select>
-                      {fieldErrors.company_size && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.company_size}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div>
-                      <label htmlFor="industry" className="block font-semibold mb-2">Odvětví</label>
-                      <select
-                        id="industry"
-                        name="industry"
-                        value={formData.industry}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.industry ? 'border-destructive' : 'border-input'
-                        }`}
-                      >
-                        <option value="">Vyberte...</option>
-                        <option value="IT">IT a technologie</option>
-                        <option value="finance">Finance a bankovnictví</option>
-                        <option value="manufacturing">Výroba a průmysl</option>
-                        <option value="retail">Maloobchod a e-commerce</option>
-                        <option value="services">Služby</option>
-                        <option value="healthcare">Zdravotnictví</option>
-                        <option value="education">Vzdělávání</option>
+                        <option value="search">Vyhledávač (Google, Seznam)</option>
+                        <option value="social">Sociální sítě</option>
+                        <option value="recommendation">Doporučení</option>
+                        <option value="event">Konference nebo událost</option>
                         <option value="other">Jiné</option>
                       </select>
-                      {fieldErrors.industry && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.industry}</p>
+                      {fieldErrors.how_found && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.how_found}</p>
                       )}
                     </div>
-                    <div>
-                      <label htmlFor="interest_level" className="block font-semibold mb-2">Zájem o implementaci AI</label>
-                      <select
-                        id="interest_level"
-                        name="interest_level"
-                        value={formData.interest_level}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                          fieldErrors.interest_level ? 'border-destructive' : 'border-input'
-                        }`}
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-start space-x-3">
+                        <input
+                          type="checkbox"
+                          id="newsletter"
+                          name="newsletter"
+                          checked={formData.newsletter}
+                          onChange={handleChange}
+                          className="mt-1"
+                        />
+                        <label htmlFor="newsletter" className="text-sm">
+                          Chci dostávat novinky a aktualizace o AI a digitální transformaci
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input
+                          type="checkbox"
+                          id="terms"
+                          name="terms"
+                          checked={formData.terms}
+                          onChange={handleChange}
+                          required
+                          className={`mt-1 ${fieldErrors.terms ? 'border-destructive' : ''}`}
+                        />
+                        <label htmlFor="terms" className="text-sm">
+                          Souhlasím se <Link href="/privacy" className="text-primary hover:underline">zpracováním osobních údajů</Link> *
+                        </label>
+                      </div>
+                      {fieldErrors.terms && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.terms}</p>
+                      )}
+                    </div>
+                    <div className="pt-4 border-t border-muted mt-6">
+                      <Button
+                        type="submit"
+                        className="w-full rounded-full"
+                        disabled={isSubmitting}
                       >
-                        <option value="">Vyberte...</option>
-                        <option value="researching">Zatím jen zjišťuji možnosti</option>
-                        <option value="planning">Plánujeme implementaci v příštích 6 měsících</option>
-                        <option value="implementing">Aktuálně implementujeme AI řešení</option>
-                        <option value="using">Již používáme AI a hledáme další možnosti</option>
-                      </select>
-                      {fieldErrors.interest_level && (
-                        <p className="mt-1 text-sm text-destructive">{fieldErrors.interest_level}</p>
-                      )}
+                        {isSubmitting ? (
+                          <>
+                            <span className="inline-block animate-spin mr-2">⟳</span>
+                            Odesílám...
+                          </>
+                        ) : (
+                          'Získat e-book zdarma'
+                        )}
+                      </Button>
+                      <div className="flex items-center justify-center mt-4 text-xs text-muted-foreground">
+                        <span>🔒 Vaše údaje jsou v bezpečí</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground text-center mt-2">
+                        * Povinné pole
+                      </p>
                     </div>
-                  </div>
-                  <div>
-                    <label htmlFor="how_found" className="block font-semibold mb-2">Jak jste se o nás dozvěděli?</label>
-                    <select
-                      id="how_found"
-                      name="how_found"
-                      value={formData.how_found}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
-                        fieldErrors.how_found ? 'border-destructive' : 'border-input'
-                      }`}
-                    >
-                      <option value="">Vyberte...</option>
-                      <option value="search">Vyhledávač (Google, Seznam)</option>
-                      <option value="social">Sociální sítě</option>
-                      <option value="recommendation">Doporučení</option>
-                      <option value="event">Konference nebo událost</option>
-                      <option value="other">Jiné</option>
-                    </select>
-                    {fieldErrors.how_found && (
-                      <p className="mt-1 text-sm text-destructive">{fieldErrors.how_found}</p>
-                    )}
-                  </div>
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        id="newsletter"
-                        name="newsletter"
-                        checked={formData.newsletter}
-                        onChange={handleChange}
-                        className="mt-1"
-                      />
-                      <label htmlFor="newsletter" className="text-sm">
-                        Chci dostávat novinky a aktualizace o AI a digitální transformaci
-                      </label>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        name="terms"
-                        checked={formData.terms}
-                        onChange={handleChange}
-                        required
-                        className={`mt-1 ${fieldErrors.terms ? 'border-destructive' : ''}`}
-                      />
-                      <label htmlFor="terms" className="text-sm">
-                        Souhlasím se <Link href="/privacy" className="text-primary hover:underline">zpracováním osobních údajů</Link> *
-                      </label>
-                    </div>
-                    {fieldErrors.terms && (
-                      <p className="mt-1 text-sm text-destructive">{fieldErrors.terms}</p>
-                    )}
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full rounded-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="inline-block animate-spin mr-2">⟳</span>
-                        Odesílám...
-                      </>
-                    ) : (
-                      'Získat e-book zdarma'
-                    )}
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    * Povinné pole
-                  </p>
-                </form>
-              )}
+                  </form>
+                )}
+              </div>
             </div>
           </div>
         </section>
+        
       </main>
       <Footer />
     </>
@@ -568,4 +615,4 @@ function BenefitCard({ title, description }: { title: string; description: strin
       <p className="text-muted-foreground">{description}</p>
     </div>
   )
-} 
+}

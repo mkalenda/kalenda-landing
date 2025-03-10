@@ -4,9 +4,9 @@ import { services } from "@/lib/data"
 export default function Home() {
   const content = {
     hero: {
-      title: "Inovativní řešení pro vaše podnikání",
-      subtitle: "Využijte sílu umělé inteligence a automatizace pro transformaci vašich obchodních procesů.",
-      cta: "Spojit se",
+      title: "Inovativní AI řešení pro moderní podnikání",
+      subtitle: "Využijte sílu umělé inteligence a automatizace pro transformaci vašich obchodních procesů a získejte konkurenční výhodu na trhu.",
+      cta: "Zjistit více",
     },
     services: {
       title: "Mé služby",
@@ -20,7 +20,7 @@ export default function Home() {
         "Jako expert na AI a systémové inženýrství se věnuji vytváření inovativních řešení pro moderní podniky. Můj přístup kombinuje nejnovější technologie s hlubokou znalostí obchodních procesů.",
         "S rozsáhlými zkušenostmi v oboru rozumím tomu, jak efektivně implementovat automatizaci a AI pro maximalizaci efektivity a konkurenceschopnosti vašeho podnikání.",
       ],
-      cta: "Zjistit více",
+      cta: "Kontaktovat mě",
     },
     ebook: {
       title: "Stáhněte si zdarma e-book o AI v podnikání",

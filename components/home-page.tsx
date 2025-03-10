@@ -120,23 +120,30 @@ function AboutSection({
   onGetStarted,
 }: { content: HomePageProps["content"]["about"]; onGetStarted: () => void }) {
   return (
-    <section id="about" className="py-20">
+    <section id="about" className="py-20 bg-gradient-to-br from-background to-muted/20">
       <div className="container max-w-5xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{content.title}</h2>
         </div>
-        <div className="grid gap-12 md:grid-cols-2 md:items-center">
+        <div className="grid gap-12 md:grid-cols-1 md:items-center">
           <div className="order-2 md:order-1">
             <div className="space-y-4">
               {content.paragraphs.map((paragraph, index) => (
                 <p key={index} className="text-muted-foreground">{paragraph}</p>
               ))}
-              <div className="pt-4">
+              <div className="flex flex-wrap gap-4 pt-6 justify-center">
                 <Button
                   className="rounded-full px-8"
                   onClick={onGetStarted}
                 >
                   {content.cta}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full px-8"
+                  onClick={() => window.location.href = '/ebook'}
+                >
+                  Zjistit více
                 </Button>
               </div>
             </div>
@@ -170,14 +177,16 @@ function EbookSection({ content }: { content: HomePageProps["content"]["ebook"] 
                 </li>
               ))}
             </ul>
-            <div className="pt-2">
-              <Button
-                className="rounded-full px-8 bg-primary text-white hover:bg-primary/90"
-                onClick={() => window.location.href = '/ebook'}
-                size="lg"
-              >
-                {content.cta}
-              </Button>
+            <div className="pt-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  className="rounded-full px-8 bg-primary text-white hover:bg-primary/90"
+                  onClick={() => window.location.href = '/ebook'}
+                  size="lg"
+                >
+                  {content.cta}
+                </Button>
+              </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Žádné platby, žádné závazky. Stáhněte si e-book zcela zdarma.
               </p>
