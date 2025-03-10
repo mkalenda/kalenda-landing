@@ -94,7 +94,7 @@ export default function EbookPage() {
                 Umělá inteligence v podnikání: Praktický průvodce pro české firmy
               </h1>
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
-                Získejte komplexní průvodce implementací AI řešení ve vaší firmě, založený na reálných datech a případových studiích z českého prostředí.
+                Získejte základní průvodce implementací AI řešení ve vaší firmě, založený na případových studiích z českého prostředí.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
                 <Button size="lg" className="rounded-full px-8" onClick={() => document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })}>
@@ -114,27 +114,27 @@ export default function EbookPage() {
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               <BenefitCard 
                 title="Praktické návody pro implementaci AI"
-                description="Krok za krokem průvodce, jak začít s AI ve vaší firmě bez ohledu na velikost či rozpočet, včetně doporučení pro různé typy podniků."
+                description="Základní průvodce, jak začít s AI ve vaší firmě bez ohledu na velikost či rozpočet, včetně doporučení pro různé typy podniků."
               />
               <BenefitCard 
-                title="Reálné případové studie z ČR"
-                description="Konkrétní příklady úspěšné implementace AI v českých firmách jako Rohlík.cz, Komerční banka nebo Škoda Auto, včetně dosažených výsledků."
+                title="Případové studie z ČR"
+                description="Příklady implementace AI v českých firmách jako Rohlík.cz, Komerční banka nebo Škoda Auto, včetně dosažených výsledků."
               />
               <BenefitCard 
-                title="Data a statistiky adopce AI v ČR"
-                description="Aktuální statistiky využití AI v českých firmách, nejčastěji implementované technologie a trendy pro rok 2024."
+                title="Statistiky adopce AI v ČR"
+                description="Základní přehled využití AI v českých firmách, nejčastěji implementované technologie a aktuální trendy."
               />
               <BenefitCard 
                 title="Právní a etické aspekty AI"
-                description="Přehled regulačního rámce EU (AI Act) a praktické kroky pro zajištění souladu s regulacemi při implementaci AI."
+                description="Přehled regulačního rámce EU (AI Act) a základní kroky pro zajištění souladu s regulacemi při implementaci AI."
               />
               <BenefitCard 
-                title="ROI a business case pro AI projekty"
-                description="Jak vypočítat návratnost investice do AI a přesvědčit stakeholdery o přínosech implementace AI ve vaší organizaci."
+                title="Praktické nástroje a technologie"
+                description="Přehled dostupných nástrojů a technologií pro implementaci AI v českých firmách, včetně odhadovaných nákladů a návratnosti."
               />
               <BenefitCard 
-                title="Tipy pro výběr AI řešení a dodavatelů"
-                description="Praktická kritéria pro výběr správného přístupu k implementaci AI a evaluaci potenciálních technologických partnerů."
+                title="Tipy pro výběr AI řešení"
+                description="Základní kritéria pro výběr správného přístupu k implementaci AI a evaluaci potenciálních technologických partnerů."
               />
             </div>
           </div>
@@ -166,9 +166,9 @@ export default function EbookPage() {
                     'Stav AI v České republice a EU',
                     'Jak AI skutečně mění podnikání',
                     'Případové studie z českého trhu',
+                    'Praktické nástroje a technologie AI',
                     'Praktický návod pro implementaci AI',
                     'Právní a etické aspekty využití AI',
-                    'Budoucnost AI v podnikání',
                     'Zdroje a doporučená literatura'
                   ].map((item, index) => (
                     <li key={index} className="flex items-start">
@@ -177,7 +177,7 @@ export default function EbookPage() {
                   ))}
                 </ul>
                 <p className="text-muted-foreground">
-                  E-book obsahuje 68 stran praktických informací, grafů, tabulek a konkrétních doporučení pro české firmy.
+                  E-book obsahuje 17 stran praktických informací, případových studií a konkrétních doporučení pro české firmy.
                 </p>
                 <Button
                   className="rounded-full px-8"
@@ -186,32 +186,6 @@ export default function EbookPage() {
                   Stáhnout zdarma
                 </Button>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="bg-muted/50 py-20">
-          <div className="container max-w-5xl">
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Co říkají čtenáři</h2>
-            </div>
-            <div className="grid gap-8 md:grid-cols-3">
-              <TestimonialCard 
-                quote="Konečně praktický průvodce AI bez zbytečného hype, který je relevantní pro české prostředí. Případové studie a konkrétní data mi pomohly připravit plán implementace AI v naší firmě."
-                author="Jan Novák"
-                company="CTO, středně velká IT firma"
-              />
-              <TestimonialCard 
-                quote="Jako manažer menší firmy jsem dlouho hledal zdroj, který by vysvětlil možnosti AI bez technického žargonu. Tento e-book mi konečně dal jasnou představu, jak můžeme začít i s omezeným rozpočtem."
-                author="Petra Svobodová"
-                company="CEO, marketingová agentura"
-              />
-              <TestimonialCard 
-                quote="Právní a etické aspekty AI byly pro nás velkou neznámou. Tento průvodce nám pomohl pochopit požadavky AI Act a připravit se na compliance. Cenný zdroj!"
-                author="Martin Dvořák"
-                company="Legal Counsel, finanční instituce"
-              />
             </div>
           </div>
         </section>
@@ -426,19 +400,9 @@ export default function EbookPage() {
 // Pomocné komponenty
 function BenefitCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="bg-card p-6 rounded-lg shadow-md transition transform hover:-translate-y-1 hover:shadow-lg">
-      <h3 className="text-xl font-bold text-primary mb-3">{title}</h3>
+    <div className="rounded-lg border bg-card p-6 shadow-sm">
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-muted-foreground">{description}</p>
-    </div>
-  )
-}
-
-function TestimonialCard({ quote, author, company }: { quote: string; author: string; company: string }) {
-  return (
-    <div className="bg-card p-6 rounded-lg shadow-md">
-      <p className="italic mb-4 text-muted-foreground">&quot;{quote}&quot;</p>
-      <p className="font-bold text-primary">{author}</p>
-      <p className="text-muted-foreground">{company}</p>
     </div>
   )
 } 

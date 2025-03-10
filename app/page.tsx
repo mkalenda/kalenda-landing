@@ -24,14 +24,14 @@ export default function Home() {
     },
     ebook: {
       title: "Stáhněte si zdarma e-book o AI v podnikání",
-      subtitle: "Komplexní průvodce implementací umělé inteligence pro české firmy. Získejte praktické informace, případové studie a konkrétní návody.",
+      subtitle: "Průvodce implementací umělé inteligence pro české firmy. Získejte praktické informace, případové studie a konkrétní návody.",
       features: [
         "Praktické návody pro implementaci AI bez ohledu na velikost firmy",
         "Reálné případové studie z českého trhu (Rohlík.cz, Komerční banka, Škoda Auto)",
         "Aktuální statistiky a trendy využití AI v českých firmách",
         "Právní a etické aspekty AI včetně nového AI Act",
-        "ROI a business case pro AI projekty",
-        "68 stran praktických informací, grafů a tabulek"
+        "Přehled praktických nástrojů a technologií pro české firmy",
+        "17 stran praktických informací a konkrétních doporučení"
       ],
       cta: "Získat e-book zdarma",
     },
