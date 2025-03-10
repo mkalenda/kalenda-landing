@@ -149,30 +149,47 @@ function FormField({
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   error?: string
 }) {
+  const id = `field-${name}`
+  const errorId = error ? `${id}-error` : undefined
+  
   return (
     <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
+      <Label htmlFor={id} className="font-medium">
+        {label}
+        <span className="text-destructive ml-1">*</span>
+      </Label>
       {type === "textarea" ? (
         <Textarea
-          id={name}
+          id={id}
           name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={error ? "border-red-500" : ""}
+          rows={4}
+          className={error ? "border-destructive" : ""}
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={errorId}
+          required
         />
       ) : (
         <Input
-          id={name}
-          name={name}
+          id={id}
           type={type}
+          name={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={error ? "border-red-500" : ""}
+          className={error ? "border-destructive" : ""}
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={errorId}
+          required
         />
       )}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

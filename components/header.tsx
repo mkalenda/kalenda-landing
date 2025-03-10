@@ -106,35 +106,41 @@ export default function Header() {
 
 function MobileMenu({ onNavClick, isHomePage }: { onNavClick: (href: string, e?: React.MouseEvent) => void, isHomePage: boolean }) {
   return (
-    <nav className="absolute left-0 top-full w-full bg-background/95 py-4 shadow-md backdrop-blur-md md:hidden">
-      <ul className="container flex flex-col space-y-4">
-        {navLinks.map((link) => (
-          <li key={link.href}>
-            {link.href.startsWith("#") ? (
-              <a
-                href={link.href}
-                onClick={(e) => onNavClick(link.href, e)}
-                className="block py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            ) : (
-              <Link
-                href={link.href}
-                className="block py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </Link>
-            )}
-          </li>
-        ))}
-        <li className="pt-2">
-          <Button className="w-full rounded-full" size="sm" onClick={() => onNavClick("#contact")}>
-            Spojit se
-          </Button>
-        </li>
-      </ul>
-    </nav>
+    <div className="absolute top-full left-0 right-0 mt-1 p-5 bg-background/95 backdrop-blur-md shadow-lg rounded-b-lg border-t z-50 animate-in slide-in-from-top-5 duration-200">
+      <nav className="flex flex-col">
+        <ul className="space-y-4 mb-6">
+          {navLinks.map((link) => (
+            <li key={link.href} className="border-b border-muted pb-2">
+              {link.href.startsWith("#") ? (
+                <a
+                  href={link.href}
+                  onClick={(e) => onNavClick(link.href, e)}
+                  className="block text-base font-medium px-2 py-1 hover:bg-muted rounded transition-colors"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  href={link.href}
+                  className="block text-base font-medium px-2 py-1 hover:bg-muted rounded transition-colors"
+                >
+                  {link.label}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+        <Button size="lg" className="rounded-full w-full" onClick={() => onNavClick("#contact")}>
+          Kontakt
+        </Button>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          <p>Máte zájem o AI řešení?</p>
+          <Link href="/ebook" className="text-primary hover:underline font-medium">
+            Získejte e-book zdarma →
+          </Link>
+        </div>
+      </nav>
+    </div>
   )
 }
 

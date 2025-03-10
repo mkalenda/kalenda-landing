@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -23,24 +23,102 @@ export default function EbookPage() {
     newsletter: true,
     terms: false
   })
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [formProgress, setFormProgress] = useState(0)
+
+  // Calculate form completion progress
+  useEffect(() => {
+    const requiredFields = ['name', 'email', 'terms'];
+    const optionalFields = ['company', 'position', 'company_size', 'phone', 'industry', 'interest_level', 'how_found'];
+    
+    const requiredFilled = requiredFields.filter(field => {
+      if (field === 'terms') return formData[field];
+      return formData[field as keyof typeof formData]?.toString().trim() !== '';
+    }).length;
+    
+    const optionalFilled = optionalFields.filter(field => 
+      formData[field as keyof typeof formData]?.toString().trim() !== ''
+    ).length;
+    
+    // Weight required fields more heavily
+    const progress = (requiredFilled / requiredFields.length) * 0.7 + 
+                     (optionalFilled / optionalFields.length) * 0.3;
+    
+    setFormProgress(Math.round(progress * 100));
+  }, [formData]);
+
+  const validateField = (name: string, value: string | boolean) => {
+    if (name === 'name' && typeof value === 'string' && !value.trim()) {
+      return 'Jméno je povinné';
+    }
+    if (name === 'email' && typeof value === 'string') {
+      if (!value.trim()) return 'E-mail je povinný';
+      if (!/^\S+@\S+\.\S+$/.test(value)) return 'Zadejte platný e-mail';
+    }
+    if (name === 'phone' && typeof value === 'string' && value.trim() && !/^(\+\d{1,3}\s?)?\d{9,10}$/.test(value)) {
+      return 'Zadejte platné telefonní číslo';
+    }
+    if (name === 'terms' && !value) {
+      return 'Pro pokračování je nutný souhlas s podmínkami';
+    }
+    return '';
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined
-
+    const newValue = type === 'checkbox' ? checked : value
+    
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     })
+    
+    // Validate field on change
+    const error = validateField(name, type === 'checkbox' ? !!checked : value);
+    setFieldErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
   }
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    let isValid = true;
+    
+    // Validate required fields
+    Object.entries(formData).forEach(([name, value]) => {
+      const error = validateField(name, value);
+      if (error) {
+        newErrors[name] = error;
+        isValid = false;
+      }
+    });
+    
+    setFieldErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError('')
+    
+    // Validate the form
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      
+      // Scroll to the first error field
+      const firstErrorField = Object.keys(fieldErrors).find(field => fieldErrors[field]);
+      if (firstErrorField) {
+        document.getElementById(firstErrorField)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      return;
+    }
 
     try {
       const response = await fetch('/api/submit-ebook-form', {
@@ -87,16 +165,19 @@ export default function EbookPage() {
       <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative flex flex-col items-center justify-center px-4 py-32 md:py-40 lg:py-48">
+        <section className="py-20 pt-32 md:pt-40 md:pb-16 lg:pb-20">
           <div className="container max-w-5xl">
-            <div className="space-y-6 text-center">
+            <div className="text-center mb-8">
+              <span className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                Exkluzivní obsah
+              </span>
               <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                Umělá inteligence v podnikání: Praktický průvodce pro české firmy
+                E-book: AI v českých firmách
               </h1>
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
-                Získejte základní průvodce implementací AI řešení ve vaší firmě, založený na případových studiích z českého prostředí.
+              <p className="mt-6 text-xl text-muted-foreground max-w-3xl mx-auto">
+                Kompletní průvodce implementací umělé inteligence pro české společnosti. Získejte praktické informace, případové studie a konkrétní návody.
               </p>
-              <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
+              <div className="mt-8 flex justify-center">
                 <Button size="lg" className="rounded-full px-8" onClick={() => document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })}>
                   Získat e-book zdarma
                 </Button>
@@ -154,7 +235,10 @@ export default function EbookPage() {
                     alt="Náhled e-booku" 
                     className="object-cover"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                     priority
+                    placeholder="blur"
+                    blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 10'%3E%3C/svg%3E"
                   />
                 </div>
               </div>
@@ -183,7 +267,7 @@ export default function EbookPage() {
                   className="rounded-full px-8"
                   onClick={() => document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })}
                 >
-                  Stáhnout zdarma
+                  Stáhnout e-book zdarma
                 </Button>
               </div>
             </div>
@@ -203,8 +287,15 @@ export default function EbookPage() {
               {success ? (
                 <div className="bg-green-500 text-white p-6 rounded-lg text-center">
                   <h3 className="text-xl font-bold mb-2">Děkujeme!</h3>
-                  <p className="mb-4">E-book byl odeslán na váš e-mail.</p>
+                  <p className="mb-4">E-book byl odeslán na vaši e-mailovou adresu.</p>
                   <p>Zkontrolujte svou e-mailovou schránku včetně složky spam/hromadné.</p>
+                  <Button 
+                    className="mt-6 rounded-full" 
+                    variant="outline"
+                    onClick={() => router.push('/')}
+                  >
+                    Zpět na hlavní stránku
+                  </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -213,9 +304,26 @@ export default function EbookPage() {
                       {error}
                     </div>
                   )}
+                  
+                  {/* Form progress indicator */}
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Dokončeno {formProgress}%</span>
+                      <span>{formProgress < 100 ? 'Vyplňte prosím povinné údaje' : 'Formulář je připraven k odeslání'}</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${formProgress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block font-semibold mb-2">Jméno a příjmení *</label>
+                      <label htmlFor="name" className="block font-semibold mb-2">
+                        Jméno a příjmení *
+                      </label>
                       <input
                         type="text"
                         id="name"
@@ -223,8 +331,13 @@ export default function EbookPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.name ? 'border-destructive' : 'border-input'
+                        }`}
                       />
+                      {fieldErrors.name && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.name}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="email" className="block font-semibold mb-2">E-mail *</label>
@@ -235,8 +348,13 @@ export default function EbookPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.email ? 'border-destructive' : 'border-input'
+                        }`}
                       />
+                      {fieldErrors.email && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.email}</p>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -248,8 +366,13 @@ export default function EbookPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.phone ? 'border-destructive' : 'border-input'
+                        }`}
                       />
+                      {fieldErrors.phone && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.phone}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="company" className="block font-semibold mb-2">Společnost</label>
@@ -259,8 +382,13 @@ export default function EbookPage() {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.company ? 'border-destructive' : 'border-input'
+                        }`}
                       />
+                      {fieldErrors.company && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.company}</p>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -272,8 +400,13 @@ export default function EbookPage() {
                         name="position"
                         value={formData.position}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.position ? 'border-destructive' : 'border-input'
+                        }`}
                       />
+                      {fieldErrors.position && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.position}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="company_size" className="block font-semibold mb-2">Velikost společnosti</label>
@@ -282,7 +415,9 @@ export default function EbookPage() {
                         name="company_size"
                         value={formData.company_size}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.company_size ? 'border-destructive' : 'border-input'
+                        }`}
                       >
                         <option value="">Vyberte...</option>
                         <option value="1-9">1-9 zaměstnanců</option>
@@ -290,6 +425,9 @@ export default function EbookPage() {
                         <option value="50-249">50-249 zaměstnanců</option>
                         <option value="250+">250+ zaměstnanců</option>
                       </select>
+                      {fieldErrors.company_size && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.company_size}</p>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -300,7 +438,9 @@ export default function EbookPage() {
                         name="industry"
                         value={formData.industry}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.industry ? 'border-destructive' : 'border-input'
+                        }`}
                       >
                         <option value="">Vyberte...</option>
                         <option value="IT">IT a technologie</option>
@@ -312,6 +452,9 @@ export default function EbookPage() {
                         <option value="education">Vzdělávání</option>
                         <option value="other">Jiné</option>
                       </select>
+                      {fieldErrors.industry && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.industry}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="interest_level" className="block font-semibold mb-2">Zájem o implementaci AI</label>
@@ -320,7 +463,9 @@ export default function EbookPage() {
                         name="interest_level"
                         value={formData.interest_level}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                          fieldErrors.interest_level ? 'border-destructive' : 'border-input'
+                        }`}
                       >
                         <option value="">Vyberte...</option>
                         <option value="researching">Zatím jen zjišťuji možnosti</option>
@@ -328,6 +473,9 @@ export default function EbookPage() {
                         <option value="implementing">Aktuálně implementujeme AI řešení</option>
                         <option value="using">Již používáme AI a hledáme další možnosti</option>
                       </select>
+                      {fieldErrors.interest_level && (
+                        <p className="mt-1 text-sm text-destructive">{fieldErrors.interest_level}</p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -337,7 +485,9 @@ export default function EbookPage() {
                       name="how_found"
                       value={formData.how_found}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
+                        fieldErrors.how_found ? 'border-destructive' : 'border-input'
+                      }`}
                     >
                       <option value="">Vyberte...</option>
                       <option value="search">Vyhledávač (Google, Seznam)</option>
@@ -346,6 +496,9 @@ export default function EbookPage() {
                       <option value="event">Konference nebo událost</option>
                       <option value="other">Jiné</option>
                     </select>
+                    {fieldErrors.how_found && (
+                      <p className="mt-1 text-sm text-destructive">{fieldErrors.how_found}</p>
+                    )}
                   </div>
                   <div className="space-y-3 pt-2">
                     <div className="flex items-start space-x-3">
@@ -369,19 +522,29 @@ export default function EbookPage() {
                         checked={formData.terms}
                         onChange={handleChange}
                         required
-                        className="mt-1"
+                        className={`mt-1 ${fieldErrors.terms ? 'border-destructive' : ''}`}
                       />
                       <label htmlFor="terms" className="text-sm">
                         Souhlasím se <Link href="/privacy" className="text-primary hover:underline">zpracováním osobních údajů</Link> *
                       </label>
                     </div>
+                    {fieldErrors.terms && (
+                      <p className="mt-1 text-sm text-destructive">{fieldErrors.terms}</p>
+                    )}
                   </div>
                   <Button
                     type="submit"
                     className="w-full rounded-full"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Odesílám...' : 'Získat e-book zdarma'}
+                    {isSubmitting ? (
+                      <>
+                        <span className="inline-block animate-spin mr-2">⟳</span>
+                        Odesílám...
+                      </>
+                    ) : (
+                      'Získat e-book zdarma'
+                    )}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center">
                     * Povinné pole

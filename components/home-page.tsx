@@ -122,30 +122,24 @@ function AboutSection({
   return (
     <section id="about" className="py-20">
       <div className="container max-w-5xl">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{content.title}</h2>
+        </div>
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
-          <div>
-            <Image
-              src="/placeholder.svg?height=600&width=600"
-              alt="O mně"
-              width={600}
-              height={600}
-              className="rounded-lg object-cover"
-            />
-          </div>
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{content.title}</h2>
-            {content.paragraphs.map((paragraph, index) => (
-              <p key={index} className="text-muted-foreground">
-                {paragraph}
-              </p>
-            ))}
-            <Button
-              variant="outline"
-              className="rounded-full px-8 border-primary text-primary hover:bg-primary hover:text-white"
-              onClick={onGetStarted}
-            >
-              {content.cta}
-            </Button>
+          <div className="order-2 md:order-1">
+            <div className="space-y-4">
+              {content.paragraphs.map((paragraph, index) => (
+                <p key={index} className="text-muted-foreground">{paragraph}</p>
+              ))}
+              <div className="pt-4">
+                <Button
+                  className="rounded-full px-8"
+                  onClick={onGetStarted}
+                >
+                  {content.cta}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -196,7 +190,10 @@ function EbookSection({ content }: { content: HomePageProps["content"]["ebook"] 
                 alt="E-book: Umělá inteligence v podnikání" 
                 className="object-cover"
                 fill
-                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 10'%3E%3C/svg%3E"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>

@@ -11,11 +11,11 @@ export default function Home() {
     services: {
       title: "Mé služby",
       subtitle:
-        "Od automatizace procesů po AI řešení, poskytuji komplexní služby pro digitální transformaci vašeho podnikání.",
+        "Od automatizace procesů po AI řešení poskytuji komplexní služby pro digitální transformaci vašeho podnikání.",
       items: services,
     },
     about: {
-      title: "O mě",
+      title: "O mně",
       paragraphs: [
         "Jako expert na AI a systémové inženýrství se věnuji vytváření inovativních řešení pro moderní podniky. Můj přístup kombinuje nejnovější technologie s hlubokou znalostí obchodních procesů.",
         "S rozsáhlými zkušenostmi v oboru rozumím tomu, jak efektivně implementovat automatizaci a AI pro maximalizaci efektivity a konkurenceschopnosti vašeho podnikání.",
