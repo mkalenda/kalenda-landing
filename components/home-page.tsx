@@ -34,6 +34,12 @@ interface HomePageProps {
       paragraphs: string[]
       cta: string
     }
+    ebook: {
+      title: string
+      subtitle: string
+      features: string[]
+      cta: string
+    }
     contact: {
       title: string
       subtitle: string
@@ -56,6 +62,7 @@ export default function HomePage({ content }: HomePageProps) {
         <HeroSection content={content.hero} onGetStarted={() => scrollToElement("contact")} />
         <ServicesSection content={content.services} />
         <AboutSection content={content.about} onGetStarted={() => scrollToElement("contact")} />
+        <EbookSection content={content.ebook} />
         <ContactSection content={content.contact} />
       </main>
       <Footer />
@@ -139,6 +146,63 @@ function AboutSection({
             >
               {content.cta}
             </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function EbookSection({ content }: { content: HomePageProps["content"]["ebook"] }) {
+  return (
+    <section id="ebook" className="py-20 bg-gradient-to-br from-muted/30 to-muted/80">
+      <div className="container max-w-5xl">
+        <div className="text-center mb-8">
+          <span className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            Nový e-book
+          </span>
+        </div>
+        <div className="grid gap-12 md:grid-cols-2 md:items-center">
+          <div className="space-y-6">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{content.title}</h2>
+            <p className="text-muted-foreground">{content.subtitle}</p>
+            <ul className="space-y-3">
+              {content.features.map((feature, index) => (
+                <li key={index} className="flex items-start">
+                  <span className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center mr-3 mt-0.5">
+                    <span className="text-primary text-xs">✓</span>
+                  </span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="pt-2">
+              <Button
+                className="rounded-full px-8 bg-primary text-white hover:bg-primary/90"
+                onClick={() => window.location.href = '/ebook'}
+                size="lg"
+              >
+                {content.cta}
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Žádné platby, žádné závazky. Stáhněte si e-book zcela zdarma.
+              </p>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="relative aspect-[3/4] w-full max-w-md mx-auto shadow-xl rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+              <Image 
+                src="/images/ebook-preview.svg" 
+                alt="E-book: Umělá inteligence v podnikání" 
+                className="object-cover"
+                fill
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+            <div className="absolute -top-4 -right-4 bg-primary text-white px-4 py-2 rounded-full font-bold transform rotate-12 shadow-lg">
+              Zdarma
+            </div>
           </div>
         </div>
       </div>

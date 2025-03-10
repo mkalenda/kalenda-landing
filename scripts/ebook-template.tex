@@ -1,0 +1,87 @@
+\documentclass[a4paper, 11pt]{book}
+
+% Základní balíčky
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{geometry}
+
+% Nastavení češtiny
+\setmainlanguage{czech}
+
+% Nastavení fontů
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+
+% Nastavení geometrie stránky
+\geometry{margin=2.5cm}
+
+% Nastavení barev
+\definecolor{primary}{RGB}{0, 102, 204}
+\definecolor{secondary}{RGB}{102, 153, 204}
+\definecolor{accent}{RGB}{255, 153, 0}
+
+% Nastavení nadpisů
+\titleformat{\chapter}[display]{\huge\bfseries\color{primary}}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}{\LARGE\bfseries\color{primary}}{\thesection}{1em}{}
+\titleformat{\subsection}{\Large\bfseries\color{secondary}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\large\bfseries\color{secondary}}{\thesubsubsection}{1em}{}
+
+% Nastavení záhlaví a zápatí
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+\fancyhead[RE,LO]{Umělá inteligence v podnikání}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[CE,CO]{www.kalenda.ai}
+
+% Nastavení hyperlinků
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=primary,
+    urlcolor=primary,
+    citecolor=primary,
+    pdftitle={Umělá inteligence v podnikání: Praktický průvodce pro české firmy},
+    pdfauthor={Kalenda.ai},
+    pdfsubject={Umělá inteligence},
+    pdfkeywords={AI, umělá inteligence, podnikání, Česká republika}
+}
+
+% Nastavení seznamů
+\setlist{noitemsep}
+\setlist[itemize]{leftmargin=*}
+\setlist[enumerate]{leftmargin=*}
+
+% Nastavení tabulek
+\renewcommand{\arraystretch}{1.2}
+
+% Nastavení řádkování
+\onehalfspacing
+
+$body$

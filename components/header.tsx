@@ -4,13 +4,17 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 
 const navLinks = [
   { href: "#services", label: "Mé služby" },
   { href: "#about", label: "O mě" },
+  { href: "/ebook", label: "E-book" },
 ]
 
 export default function Header() {
+  const router = useRouter()
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -20,8 +24,25 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const handleNavClick = (href: string) => {
-    document.getElementById(href.slice(1))?.scrollIntoView({ behavior: "smooth" })
+  // Zjištění, zda jsme na hlavní stránce
+  const isHomePage = pathname === "/" || pathname === ""
+
+  const handleNavClick = (href: string, e?: React.MouseEvent) => {
+    if (e) e.preventDefault()
+    
+    if (href.startsWith("#")) {
+      // Interní odkaz na sekci stránky
+      if (isHomePage) {
+        // Jsme na hlavní stránce, stačí scrollovat
+        document.getElementById(href.slice(1))?.scrollIntoView({ behavior: "smooth" })
+      } else {
+        // Nejsme na hlavní stránce, nejprve navigujeme na hlavní stránku a pak přidáme hash
+        router.push(`/${href}`)
+      }
+    } else {
+      // Externí odkaz na jinou stránku
+      router.push(href)
+    }
     setIsMobileMenuOpen(false)
   }
 
@@ -40,13 +61,22 @@ export default function Header() {
           <ul className="flex items-center space-x-8">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={() => handleNavClick(link.href)}
-                  className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
+                {link.href.startsWith("#") ? (
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavClick(link.href, e)}
+                    className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    href={link.href}
+                    className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </li>
             ))}
             <li>
@@ -69,24 +99,33 @@ export default function Header() {
         </div>
       </div>
 
-      {isMobileMenuOpen && <MobileMenu onNavClick={handleNavClick} />}
+      {isMobileMenuOpen && <MobileMenu onNavClick={handleNavClick} isHomePage={isHomePage} />}
     </header>
   )
 }
 
-function MobileMenu({ onNavClick }: { onNavClick: (href: string) => void }) {
+function MobileMenu({ onNavClick, isHomePage }: { onNavClick: (href: string, e?: React.MouseEvent) => void, isHomePage: boolean }) {
   return (
     <nav className="absolute left-0 top-full w-full bg-background/95 py-4 shadow-md backdrop-blur-md md:hidden">
       <ul className="container flex flex-col space-y-4">
         {navLinks.map((link) => (
           <li key={link.href}>
-            <Link
-              href={link.href}
-              onClick={() => onNavClick(link.href)}
-              className="block py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
+            {link.href.startsWith("#") ? (
+              <a
+                href={link.href}
+                onClick={(e) => onNavClick(link.href, e)}
+                className="block py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                href={link.href}
+                className="block py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            )}
           </li>
         ))}
         <li className="pt-2">
