@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import fs from 'fs'
 import path from 'path'
 
 // Typy pro formulářová data
@@ -31,14 +30,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Ukládání dat do databáze nebo CSV souboru
-    await saveDataToFile(formData)
-
     // Odeslání e-mailu s ebookem
     await sendEmailWithEbook(formData)
     
     // Odeslání notifikace o novém zájemci
     await sendLeadNotification(formData)
+
+    // Pokud je zaškrtnuto "chci dostávat novinky", můžeme přidat e-mail do mailing listu
+    // Toto by mělo být implementováno pomocí externího API (Mailchimp, SendGrid, apod.)
+    // místo zápisu do souboru
 
     // Úspěšná odpověď
     return NextResponse.json(
@@ -52,31 +52,6 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-/**
- * Uloží data zájemce do CSV souboru
- */
-async function saveDataToFile(data: FormData) {
-  const csvLine = `${new Date().toISOString()},${data.name},${data.email},${data.company},${data.position},${data.company_size},${data.phone},${data.industry},${data.interest_level},${data.how_found},${data.newsletter}\n`
-  const filePath = path.join(process.cwd(), 'data', 'ebook-requests.csv')
-  
-  // Vytvoření adresáře, pokud neexistuje
-  const dir = path.dirname(filePath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  
-  // Vytvoření souboru s hlavičkou, pokud neexistuje
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(
-      filePath,
-      'timestamp,name,email,company,position,company_size,phone,industry,interest_level,how_found,newsletter\n'
-    )
-  }
-  
-  // Přidání nového řádku
-  fs.appendFileSync(filePath, csvLine)
 }
 
 /**
@@ -189,38 +164,6 @@ www.kalenda.ai
 
   // Odeslání e-mailu
   await transporter.sendMail(mailOptions)
-
-  // Pokud je zaškrtnuto "chci dostávat novinky", můžeme přidat e-mail do mailing listu
-  if (data.newsletter) {
-    await addToMailingList(data)
-  }
-}
-
-/**
- * Přidá e-mail do seznamu odběratelů novinek
- */
-async function addToMailingList(data: FormData) {
-  // Zde můžete implementovat napojení na váš e-mailový marketing (Mailchimp, SendGrid, apod.)
-  // Pro jednoduchost pouze zapíšeme do CSV
-  const csvLine = `${new Date().toISOString()},${data.name},${data.email},${data.company},${data.position},${data.company_size},${data.phone},${data.industry},${data.interest_level},${data.how_found}\n`
-  const filePath = path.join(process.cwd(), 'data', 'newsletter-subscribers.csv')
-  
-  // Vytvoření adresáře, pokud neexistuje
-  const dir = path.dirname(filePath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  
-  // Vytvoření souboru s hlavičkou, pokud neexistuje
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(
-      filePath,
-      'timestamp,name,email,company,position,company_size,phone,industry,interest_level,how_found\n'
-    )
-  }
-  
-  // Přidání nového řádku
-  fs.appendFileSync(filePath, csvLine)
 }
 
 /**
