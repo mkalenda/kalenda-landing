@@ -81,7 +81,7 @@ function HeroSection({
         </div>
       </div>
       <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer"
+        className="absolute inset-x-0 bottom-8 flex justify-center animate-bounce cursor-pointer"
         onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}
       >
         <ChevronDown className="h-8 w-8 text-primary" />
